@@ -12,6 +12,6 @@
 
 NSString *NSStringFromNode(YGNodeRef node, YGPrintOptions options) {
   std::string str;
-  facebook::yoga::YGNodeToString(&str, node, options, 0);
+  facebook::yoga::YGNodeToString(str, node, options, 0);
   return [[NSString alloc] initWithCString:str.c_str() encoding:NSUTF8StringEncoding];
 }

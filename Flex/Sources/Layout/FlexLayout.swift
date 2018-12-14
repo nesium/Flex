@@ -126,8 +126,8 @@ public final class FlexLayout {
 
   public func sizeThatFits(_ size: CGSize) -> CGSize {
     return self.calculateLayout(with: CGSize(
-      width: size.width == CGFloat.greatestFiniteMagnitude ? CGFloat(YGUndefined) : size.width,
-      height: size.height == CGFloat.greatestFiniteMagnitude ? CGFloat(YGUndefined) : size.height
+      width: size.width == CGFloat.greatestFiniteMagnitude ? CGFloat(YGValueUndefined.value) : size.width,
+      height: size.height == CGFloat.greatestFiniteMagnitude ? CGFloat(YGValueUndefined.value) : size.height
     ))
   }
 
