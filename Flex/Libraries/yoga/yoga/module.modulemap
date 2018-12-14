@@ -1,0 +1,6 @@
+module Yoga [system][extern_c] {
+  header "Yoga.h"
+  header "YGEnums.h"
+  header "PrintNode.h"
+  export *
+}

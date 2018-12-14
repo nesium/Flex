@@ -1,0 +1,4 @@
+<UIView; frame = (0 0; 320 50); layer = <CALayer>>
+   | <UIView; frame = (0 0; 106.667 50); layer = <CALayer>>
+   | <UIView; frame = (106.667 0; 106.667 50); layer = <CALayer>>
+   | <UIView; frame = (213.333 0; 106.667 50); layer = <CALayer>>
