@@ -5,6 +5,10 @@
  * file in the root directory of this source tree.
  */
 #pragma once
+#include <algorithm>
+#include <array>
+#include <initializer_list>
+#include "CompactValue.h"
 #include "YGFloatOptional.h"
 #include "Yoga-internal.h"
 #include "Yoga.h"
@@ -13,22 +17,13 @@ constexpr YGValue kYGValueUndefined = {0, YGUnitUndefined};
 
 constexpr YGValue kYGValueAuto = {0, YGUnitAuto};
 
-constexpr std::array<YGValue, YGEdgeCount> kYGDefaultEdgeValuesUnit = {
-    {kYGValueUndefined,
-     kYGValueUndefined,
-     kYGValueUndefined,
-     kYGValueUndefined,
-     kYGValueUndefined,
-     kYGValueUndefined,
-     kYGValueUndefined,
-     kYGValueUndefined,
-     kYGValueUndefined}};
-
-constexpr std::array<YGValue, 2> kYGDefaultDimensionValuesUnit = {
-    {kYGValueUndefined, kYGValueUndefined}};
-
 struct YGStyle {
-  using Dimensions = std::array<YGValue, 2>;
+ private:
+  using CompactValue = facebook::yoga::detail::CompactValue;
+
+ public:
+  using Dimensions = facebook::yoga::detail::Values<2>;
+  using Edges = facebook::yoga::detail::Values<YGEdgeCount>;
 
   YGDirection direction : 2;
   YGFlexDirection flexDirection : 2;
@@ -43,14 +38,14 @@ struct YGStyle {
   YGFloatOptional flex = {};
   YGFloatOptional flexGrow = {};
   YGFloatOptional flexShrink = {};
-  YGValue flexBasis = kYGValueAuto;
-  std::array<YGValue, YGEdgeCount> margin = kYGDefaultEdgeValuesUnit;
-  std::array<YGValue, YGEdgeCount> position = kYGDefaultEdgeValuesUnit;
-  std::array<YGValue, YGEdgeCount> padding = kYGDefaultEdgeValuesUnit;
-  std::array<YGValue, YGEdgeCount> border = kYGDefaultEdgeValuesUnit;
-  Dimensions dimensions = {{kYGValueAuto, kYGValueAuto}};
-  Dimensions minDimensions = kYGDefaultDimensionValuesUnit;
-  Dimensions maxDimensions = kYGDefaultDimensionValuesUnit;
+  CompactValue flexBasis = CompactValue::ofAuto();
+  Edges margin = {};
+  Edges position = {};
+  Edges padding = {};
+  Edges border = {};
+  Dimensions dimensions{CompactValue::ofAuto()};
+  Dimensions minDimensions = {};
+  Dimensions maxDimensions = {};
   // Yoga specific properties, not compatible with flexbox specification
   YGFloatOptional aspectRatio = {};
 
