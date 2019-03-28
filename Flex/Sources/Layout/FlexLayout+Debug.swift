@@ -6,6 +6,7 @@
 //  Copyright © 2018 Marc Bauer. All rights reserved.
 //
 
+#if DEBUG
 import Foundation
 import Yoga
 
@@ -14,3 +15,4 @@ extension FlexLayout: CustomDebugStringConvertible {
     return NSStringFromNode(self.node, YGPrintOptionsStyle)
   }
 }
+#endif
