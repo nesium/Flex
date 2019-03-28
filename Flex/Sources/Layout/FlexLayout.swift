@@ -151,7 +151,7 @@ public final class FlexLayout {
     // Yoga is not happy if we try to mark a node as "dirty" before we have set
     // the measure function. Since we already know that this is a leaf,
     // this *should* be fine. Forgive me Hack Gods.
-    if (YGNodeGetMeasureFunc(self.node) == nil) {
+    if (!YGNodeHasMeasureFunc(self.node)) {
       YGNodeSetMeasureFunc(self.node) { node, width, widthMode, height, heightMode in
         FlexLayout.measureView(
           node: node,
