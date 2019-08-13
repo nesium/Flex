@@ -3,13 +3,18 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 
-load("//tools/build_defs/oss:yoga_defs.bzl", "ANDROID", "CXX_LIBRARY_WHITELIST", "FBJNI_JAVA_TARGET", "FBJNI_TARGET", "INFER_ANNOTATIONS_TARGET", "JNI_TARGET", "JSR_305_TARGET", "JUNIT_TARGET", "PROGRUARD_ANNOTATIONS_TARGET", "SOLOADER_TARGET", "yoga_cxx_library", "yoga_dep", "yoga_java_binary", "yoga_java_library", "yoga_java_test")
+load("//tools/build_defs/oss:yoga_defs.bzl", "ANDROID", "CXX_LIBRARY_WHITELIST", "FBJNI_JAVA_TARGET", "FBJNI_TARGET", "INFER_ANNOTATIONS_TARGET", "JNI_TARGET", "JSR_305_TARGET", "JUNIT_TARGET", "PROGRUARD_ANNOTATIONS_TARGET", "SOLOADER_TARGET", "yoga_cxx_lib", "yoga_cxx_library", "yoga_dep", "yoga_java_binary", "yoga_java_library", "yoga_java_test")
+
+CXX_LIBRARY_WHITELIST_FOR_TESTS = CXX_LIBRARY_WHITELIST + [
+    yoga_cxx_lib("testutil:jni"),
+    yoga_cxx_lib("testutil:testutil"),
+]
 
 yoga_cxx_library(
     name = "jni",
     srcs = glob(["jni/*.cpp"]),
-    headers = glob(["jni/*.h"]),
-    header_namespace = "",
+    header_namespace = "yoga/java",
+    exported_headers = glob(["jni/*.h"]),
     allow_jni_merging = True,
     compiler_flags = [
         "-fno-omit-frame-pointer",
@@ -18,7 +23,7 @@ yoga_cxx_library(
         "-Wall",
         "-Werror",
         "-Os",
-        "-std=c++14",
+        "-std=c++11",
     ],
     platforms = ANDROID,
     preprocessor_flags = [
@@ -45,6 +50,7 @@ yoga_java_library(
     visibility = ["PUBLIC"],
     deps = [
         ":jni",
+        FBJNI_JAVA_TARGET,
         INFER_ANNOTATIONS_TARGET,
         JSR_305_TARGET,
         PROGRUARD_ANNOTATIONS_TARGET,
@@ -55,11 +61,12 @@ yoga_java_library(
 yoga_java_test(
     name = "tests",
     srcs = glob(["tests/**/*.java"]),
-    cxx_library_whitelist = CXX_LIBRARY_WHITELIST,
+    cxx_library_whitelist = CXX_LIBRARY_WHITELIST_FOR_TESTS,
     use_cxx_libraries = True,
     visibility = ["PUBLIC"],
     deps = [
         ":java",
+        yoga_dep("testutil:java"),
         JUNIT_TARGET,
     ],
 )

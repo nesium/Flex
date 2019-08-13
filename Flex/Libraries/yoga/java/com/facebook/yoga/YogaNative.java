@@ -28,7 +28,6 @@ public class YogaNative {
 
 
   // YGNode related
-  static native int jni_YGNodeGetInstanceCount();
   static native long jni_YGNodeNew();
   static native long jni_YGNodeNewWithConfig(long configPointer);
   static native void jni_YGNodeFree(long nativePointer);
@@ -111,4 +110,5 @@ public class YogaNative {
   static native void jni_YGNodeSetHasBaselineFunc(long nativePointer, boolean hasMeasureFunc);
   static native void jni_YGNodePrint(long nativePointer);
   static native void jni_YGNodeSetStyleInputs(long nativePointer, float[] styleInputsArray, int size);
+  static native long jni_YGNodeClone(long nativePointer);
 }
