@@ -12,114 +12,62 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 @DoNotStrip
-public abstract class YogaNodeJNIBase extends YogaNode {
+public abstract class YogaNodeJNIBase extends YogaNode implements Cloneable {
+
+  /* Those flags needs be in sync with YGJNI.cpp */
+  private static final byte MARGIN = 1;
+  private static final byte PADDING = 2;
+  private static final byte BORDER = 4;
+  private static final byte DOES_LEGACY_STRETCH_BEHAVIOUR = 8;
+  private static final byte HAS_NEW_LAYOUT = 16;
+
+  private static final byte LAYOUT_EDGE_SET_FLAG_INDEX = 0;
+  private static final byte LAYOUT_WIDTH_INDEX = 1;
+  private static final byte LAYOUT_HEIGHT_INDEX = 2;
+  private static final byte LAYOUT_LEFT_INDEX = 3;
+  private static final byte LAYOUT_TOP_INDEX = 4;
+  private static final byte LAYOUT_DIRECTION_INDEX = 5;
+  private static final byte LAYOUT_MARGIN_START_INDEX = 6;
+  private static final byte LAYOUT_PADDING_START_INDEX = 10;
+  private static final byte LAYOUT_BORDER_START_INDEX = 14;
 
   @Nullable private YogaNodeJNIBase mOwner;
   @Nullable private List<YogaNodeJNIBase> mChildren;
   @Nullable private YogaMeasureFunction mMeasureFunction;
   @Nullable private YogaBaselineFunction mBaselineFunction;
-  private long mNativePointer;
+  protected long mNativePointer;
   @Nullable private Object mData;
 
-  /* Those flags needs be in sync with YGJNI.cpp */
-  private static final int MARGIN = 1;
-  private static final int PADDING = 2;
-  private static final int BORDER = 4;
+  @DoNotStrip
+  private @Nullable float[] arr = null;
 
-  @DoNotStrip
-  private float mWidth = YogaConstants.UNDEFINED;
-  @DoNotStrip
-  private float mHeight = YogaConstants.UNDEFINED;
-  @DoNotStrip
-  private float mTop = YogaConstants.UNDEFINED;
-  @DoNotStrip
-  private float mLeft = YogaConstants.UNDEFINED;
-  @DoNotStrip
-  private float mMarginLeft = 0;
-  @DoNotStrip
-  private float mMarginTop = 0;
-  @DoNotStrip
-  private float mMarginRight = 0;
-  @DoNotStrip
-  private float mMarginBottom = 0;
-  @DoNotStrip
-  private float mPaddingLeft = 0;
-  @DoNotStrip
-  private float mPaddingTop = 0;
-  @DoNotStrip
-  private float mPaddingRight = 0;
-  @DoNotStrip
-  private float mPaddingBottom = 0;
-  @DoNotStrip
-  private float mBorderLeft = 0;
-  @DoNotStrip
-  private float mBorderTop = 0;
-  @DoNotStrip
-  private float mBorderRight = 0;
-  @DoNotStrip
-  private float mBorderBottom = 0;
   @DoNotStrip
   private int mLayoutDirection = 0;
-  @DoNotStrip
+
   private boolean mHasNewLayout = true;
-  @DoNotStrip private boolean mDoesLegacyStretchFlagAffectsLayout = false;
 
-  public YogaNodeJNIBase() {
-    mNativePointer = YogaNative.jni_YGNodeNew();
-    if (mNativePointer == 0) {
+  private YogaNodeJNIBase(long nativePointer) {
+    if (nativePointer == 0) {
       throw new IllegalStateException("Failed to allocate native memory");
     }
+    mNativePointer = nativePointer;
   }
 
-  public YogaNodeJNIBase(YogaConfig config) {
-    mNativePointer = YogaNative.jni_YGNodeNewWithConfig(config.mNativePointer);
-    if (mNativePointer == 0) {
-      throw new IllegalStateException("Failed to allocate native memory");
-    }
+  YogaNodeJNIBase() {
+    this(YogaNative.jni_YGNodeNew());
   }
 
-  @Override
-  protected void finalize() throws Throwable {
-    try {
-      freeNatives();
-    } finally {
-      super.finalize();
-    }
+  YogaNodeJNIBase(YogaConfig config) {
+    this(YogaNative.jni_YGNodeNewWithConfig(config.mNativePointer));
   }
 
-  /* frees the native underlying YGNode. Useful for testing. */
-  public void freeNatives() {
-    if (mNativePointer > 0) {
-      long nativePointer = mNativePointer;
-      mNativePointer = 0;
-      YogaNative.jni_YGNodeFree(nativePointer);
-    }
-  }
   public void reset() {
-    mHasNewLayout = true;
-
-    mWidth = YogaConstants.UNDEFINED;
-    mHeight = YogaConstants.UNDEFINED;
-    mTop = YogaConstants.UNDEFINED;
-    mLeft = YogaConstants.UNDEFINED;
-    mMarginLeft = 0;
-    mMarginTop = 0;
-    mMarginRight = 0;
-    mMarginBottom = 0;
-    mPaddingLeft = 0;
-    mPaddingTop = 0;
-    mPaddingRight = 0;
-    mPaddingBottom = 0;
-    mBorderLeft = 0;
-    mBorderTop = 0;
-    mBorderRight = 0;
-    mBorderBottom = 0;
-    mLayoutDirection = 0;
-
     mMeasureFunction = null;
     mBaselineFunction = null;
     mData = null;
-    mDoesLegacyStretchFlagAffectsLayout = false;
+    arr = null;
+    mHasNewLayout = true;
+    mLayoutDirection = 0;
 
     YogaNative.jni_YGNodeReset(mNativePointer);
   }
@@ -155,6 +103,21 @@ public abstract class YogaNodeJNIBase extends YogaNode {
 
   public boolean isReferenceBaseline() {
     return YogaNative.jni_YGNodeIsReferenceBaseline(mNativePointer);
+  }
+
+  @Override
+  public YogaNodeJNIBase cloneWithoutChildren() {
+    try {
+      YogaNodeJNIBase clonedYogaNode = (YogaNodeJNIBase) super.clone();
+      long clonedNativePointer = YogaNative.jni_YGNodeClone(mNativePointer);
+      clonedYogaNode.mOwner = null;
+      clonedYogaNode.mNativePointer = clonedNativePointer;
+      clonedYogaNode.clearChildren();
+      return clonedYogaNode;
+    } catch (CloneNotSupportedException ex) {
+      // This class implements Cloneable, this should not happen
+      throw new RuntimeException(ex);
+    }
   }
 
   private void clearChildren() {
@@ -219,10 +182,6 @@ public abstract class YogaNodeJNIBase extends YogaNode {
     YogaNative.jni_YGNodeCalculateLayout(mNativePointer, width, height, nativePointers, nodes);
   }
 
-  public boolean hasNewLayout() {
-    return mHasNewLayout;
-  }
-
   public void dirty() {
     YogaNative.jni_YGNodeMarkDirty(mNativePointer);
   }
@@ -238,10 +197,6 @@ public abstract class YogaNodeJNIBase extends YogaNode {
   @Override
   public void copyStyle(YogaNode srcNode) {
     YogaNative.jni_YGNodeCopyStyle(mNativePointer, ((YogaNodeJNIBase) srcNode).mNativePointer);
-  }
-
-  public void markLayoutSeen() {
-    mHasNewLayout = false;
   }
 
   public YogaDirection getStyleDirection() {
@@ -500,87 +455,6 @@ public abstract class YogaNodeJNIBase extends YogaNode {
     YogaNative.jni_YGNodeStyleSetAspectRatio(mNativePointer, aspectRatio);
   }
 
-  public float getLayoutX() {
-    return mLeft;
-  }
-
-  public float getLayoutY() {
-    return mTop;
-  }
-
-  public float getLayoutWidth() {
-    return mWidth;
-  }
-
-  public float getLayoutHeight() {
-    return mHeight;
-  }
-
-  public boolean getDoesLegacyStretchFlagAffectsLayout() {
-    return mDoesLegacyStretchFlagAffectsLayout;
-  }
-
-  public float getLayoutMargin(YogaEdge edge) {
-    switch (edge) {
-      case LEFT:
-        return mMarginLeft;
-      case TOP:
-        return mMarginTop;
-      case RIGHT:
-        return mMarginRight;
-      case BOTTOM:
-        return mMarginBottom;
-      case START:
-        return getLayoutDirection() == YogaDirection.RTL ? mMarginRight : mMarginLeft;
-      case END:
-        return getLayoutDirection() == YogaDirection.RTL ? mMarginLeft : mMarginRight;
-      default:
-        throw new IllegalArgumentException("Cannot get layout margins of multi-edge shorthands");
-    }
-  }
-
-  public float getLayoutPadding(YogaEdge edge) {
-    switch (edge) {
-      case LEFT:
-        return mPaddingLeft;
-      case TOP:
-        return mPaddingTop;
-      case RIGHT:
-        return mPaddingRight;
-      case BOTTOM:
-        return mPaddingBottom;
-      case START:
-        return getLayoutDirection() == YogaDirection.RTL ? mPaddingRight : mPaddingLeft;
-      case END:
-        return getLayoutDirection() == YogaDirection.RTL ? mPaddingLeft : mPaddingRight;
-      default:
-        throw new IllegalArgumentException("Cannot get layout paddings of multi-edge shorthands");
-    }
-  }
-
-  public float getLayoutBorder(YogaEdge edge) {
-    switch (edge) {
-      case LEFT:
-        return mBorderLeft;
-      case TOP:
-        return mBorderTop;
-      case RIGHT:
-        return mBorderRight;
-      case BOTTOM:
-        return mBorderBottom;
-      case START:
-        return getLayoutDirection() == YogaDirection.RTL ? mBorderRight : mBorderLeft;
-      case END:
-        return getLayoutDirection() == YogaDirection.RTL ? mBorderLeft : mBorderRight;
-      default:
-        throw new IllegalArgumentException("Cannot get layout border of multi-edge shorthands");
-    }
-  }
-
-  public YogaDirection getLayoutDirection() {
-    return YogaDirection.fromInt(mLayoutDirection);
-  }
-
   public void setMeasureFunction(YogaMeasureFunction measureFunction) {
     mMeasureFunction = measureFunction;
     YogaNative.jni_YGNodeSetHasMeasureFunc(mNativePointer, measureFunction != null);
@@ -617,6 +491,11 @@ public abstract class YogaNodeJNIBase extends YogaNode {
 
   public boolean isMeasureDefined() {
     return mMeasureFunction != null;
+  }
+
+  @Override
+  public boolean isBaselineDefined() {
+    return mBaselineFunction != null;
   }
 
   public void setData(Object data) {
@@ -660,5 +539,125 @@ public abstract class YogaNodeJNIBase extends YogaNode {
 
   private static YogaValue valueFromLong(long raw) {
     return new YogaValue(Float.intBitsToFloat((int) raw), (int) (raw >> 32));
+  }
+
+  @Override
+  public float getLayoutX() {
+    return arr != null ? arr[LAYOUT_LEFT_INDEX] : 0;
+  }
+
+  @Override
+  public float getLayoutY() {
+    return arr != null ? arr[LAYOUT_TOP_INDEX] : 0;
+  }
+
+  @Override
+  public float getLayoutWidth() {
+    return arr != null ? arr[LAYOUT_WIDTH_INDEX] : 0;
+  }
+
+  @Override
+  public float getLayoutHeight() {
+    return arr != null ? arr[LAYOUT_HEIGHT_INDEX] : 0;
+  }
+
+  public boolean getDoesLegacyStretchFlagAffectsLayout() {
+    return arr != null && (((int) arr[LAYOUT_EDGE_SET_FLAG_INDEX] & DOES_LEGACY_STRETCH_BEHAVIOUR) == DOES_LEGACY_STRETCH_BEHAVIOUR);
+  }
+
+  @Override
+  public float getLayoutMargin(YogaEdge edge) {
+    if (arr != null && ((int) arr[LAYOUT_EDGE_SET_FLAG_INDEX] & MARGIN) == MARGIN) {
+      switch (edge) {
+        case LEFT:
+          return arr[LAYOUT_MARGIN_START_INDEX];
+        case TOP:
+          return arr[LAYOUT_MARGIN_START_INDEX + 1];
+        case RIGHT:
+          return arr[LAYOUT_MARGIN_START_INDEX + 2];
+        case BOTTOM:
+          return arr[LAYOUT_MARGIN_START_INDEX + 3];
+        case START:
+          return getLayoutDirection() == YogaDirection.RTL ? arr[LAYOUT_MARGIN_START_INDEX + 2] : arr[LAYOUT_MARGIN_START_INDEX];
+        case END:
+          return getLayoutDirection() == YogaDirection.RTL ? arr[LAYOUT_MARGIN_START_INDEX] : arr[LAYOUT_MARGIN_START_INDEX + 2];
+        default:
+          throw new IllegalArgumentException("Cannot get layout margins of multi-edge shorthands");
+      }
+    } else {
+      return 0;
+    }
+  }
+
+  @Override
+  public float getLayoutPadding(YogaEdge edge) {
+    if (arr != null && ((int) arr[LAYOUT_EDGE_SET_FLAG_INDEX] & PADDING) == PADDING) {
+      int paddingStartIndex = LAYOUT_PADDING_START_INDEX - ((((int)arr[LAYOUT_EDGE_SET_FLAG_INDEX] & MARGIN) == MARGIN) ? 0 : 4);
+      switch (edge) {
+        case LEFT:
+          return arr[paddingStartIndex];
+        case TOP:
+          return arr[paddingStartIndex + 1];
+        case RIGHT:
+          return arr[paddingStartIndex + 2];
+        case BOTTOM:
+          return arr[paddingStartIndex + 3];
+        case START:
+          return getLayoutDirection() == YogaDirection.RTL ? arr[paddingStartIndex + 2] : arr[paddingStartIndex];
+        case END:
+          return getLayoutDirection() == YogaDirection.RTL ? arr[paddingStartIndex] : arr[paddingStartIndex + 2];
+        default:
+          throw new IllegalArgumentException("Cannot get layout paddings of multi-edge shorthands");
+      }
+    } else {
+      return 0;
+    }
+  }
+
+  @Override
+  public float getLayoutBorder(YogaEdge edge) {
+    if (arr != null && ((int) arr[LAYOUT_EDGE_SET_FLAG_INDEX] & BORDER) == BORDER) {
+      int borderStartIndex = LAYOUT_BORDER_START_INDEX - ((((int) arr[LAYOUT_EDGE_SET_FLAG_INDEX] & MARGIN) == MARGIN) ? 0 : 4) - ((((int) arr[LAYOUT_EDGE_SET_FLAG_INDEX] & PADDING) == PADDING) ? 0 : 4);
+      switch (edge) {
+        case LEFT:
+          return arr[borderStartIndex];
+        case TOP:
+          return arr[borderStartIndex + 1];
+        case RIGHT:
+          return arr[borderStartIndex + 2];
+        case BOTTOM:
+          return arr[borderStartIndex + 3];
+        case START:
+          return getLayoutDirection() == YogaDirection.RTL ? arr[borderStartIndex + 2] : arr[borderStartIndex];
+        case END:
+          return getLayoutDirection() == YogaDirection.RTL ? arr[borderStartIndex] : arr[borderStartIndex + 2];
+        default:
+          throw new IllegalArgumentException("Cannot get layout border of multi-edge shorthands");
+      }
+    } else {
+      return 0;
+    }
+  }
+
+  @Override
+  public YogaDirection getLayoutDirection() {
+    return YogaDirection.fromInt(arr != null ? (int) arr[LAYOUT_DIRECTION_INDEX] : mLayoutDirection);
+  }
+
+  @Override
+  public boolean hasNewLayout() {
+    if (arr != null) {
+      return (((int) arr[LAYOUT_EDGE_SET_FLAG_INDEX]) & HAS_NEW_LAYOUT) == HAS_NEW_LAYOUT;
+    } else {
+      return mHasNewLayout;
+    }
+  }
+
+  @Override
+  public void markLayoutSeen() {
+    if (arr != null) {
+      arr[LAYOUT_EDGE_SET_FLAG_INDEX] = ((int) arr[LAYOUT_EDGE_SET_FLAG_INDEX]) & ~(HAS_NEW_LAYOUT);
+    }
+    mHasNewLayout = false;
   }
 }
