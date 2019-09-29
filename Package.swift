@@ -8,7 +8,7 @@ let package = Package(
     .iOS(.v11)
   ],
   products: [
-    .library(name: "Flex", targets: ["Flex", "Yoga"]),
+    .library(name: "Flex", targets: ["Flex"]),
   ],
   dependencies: [
     .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.6.0"),
