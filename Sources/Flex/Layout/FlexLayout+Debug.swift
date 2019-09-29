@@ -8,7 +8,7 @@
 
 #if DEBUG
 import Foundation
-import Yoga
+import YogaDebug
 
 extension FlexLayout: CustomDebugStringConvertible {
   public var debugDescription: String {

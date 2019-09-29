@@ -16,10 +16,14 @@ let package = Package(
   targets: [
     .target(
       name: "Flex",
-      dependencies: ["Yoga"]
+      dependencies: ["Yoga", "YogaDebug"]
     ),
     .target(
       name: "Yoga"
+    ),
+    .target(
+      name: "YogaDebug",
+      dependencies: ["Yoga"]
     ),
     .testTarget(name: "FlexTests", dependencies: ["Flex", "SnapshotTesting"])
   ],
