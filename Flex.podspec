@@ -8,7 +8,7 @@ Pod::Spec.new do |spec|
   
   spec.platform             = :ios, "11.0"
   spec.source               = { :git => "https://github.com/nesium/Flex.git", :tag => "#{spec.version}" }
-  spec.source_files         = "Sources/Flex/**/*.swift", "yoga/yoga/**/*.cpp"
+  spec.source_files         = "Sources/Flex/**/*.swift", "yoga/yoga/**/*.{h,cpp}"
   spec.public_header_files = [
     "yoga/yoga/Yoga.h",
     "yoga/yoga/YGEnums.h",
