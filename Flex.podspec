@@ -8,13 +8,7 @@ Pod::Spec.new do |spec|
   
   spec.platform             = :ios, "11.0"
   spec.source               = { :git => "https://github.com/nesium/Flex.git", :tag => "#{spec.version}" }
-  spec.source_files         = "Sources/Flex/**/*.swift", "yoga/yoga/**/*.{h,cpp}"
-  spec.public_header_files = [
-    "yoga/yoga/Yoga.h",
-    "yoga/yoga/YGEnums.h",
-    "yoga/yoga/YGMacro.h",
-    "yoga/yoga/YGValue.h"
-  ]
+  spec.source_files         = "Sources/Flex/**/*.swift", "Sources/Yoga/**/*.{h,cpp}", "Sources/YogaDebug/**/*.{h,mm}"
   spec.swift_version        = "5.1"
   spec.module_name          = "Flex"
   spec.preserve_paths       = "Sources/Yoga/include/module.modulemap"
