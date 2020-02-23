@@ -29,7 +29,7 @@ final class AlignmentRectInsetsTests: XCTestCase {
 
     let view = TestView(alignmentInsets: UIEdgeInsets(top: 2, left: 5, bottom: 7, right: 11))
     view.flex.enabled = true
-    view.flex.grow = 1
+    view.flex.grow(1)
     container.addSubview(view)
 
     container.flex.layoutSubviews()
@@ -39,20 +39,19 @@ final class AlignmentRectInsetsTests: XCTestCase {
 
   func testAlignmentRectInsetsWithLabel() {
     let container = UIView(frame: CGRect(x: 0, y: 0, width: 300, height: 300))
-    container.flex.style {
-      $0.enabled = true
-      $0.justifyContent = .center
-      $0.alignItems = .center
-    }
+    container.flex
+      .enable()
+      .justifyContent(.center)
+      .align(items: .center)
 
     let labelContainer = UIView()
-    labelContainer.flex.enabled = true
+    labelContainer.flex.enable()
     labelContainer.layer.borderColor = UIColor.red.cgColor
     labelContainer.layer.borderWidth = 1
     container.addSubview(labelContainer)
 
     let label = TestLabel()
-    label.flex.enabled = true
+    label.flex.enable()
     label.text = "Flex Layout"
     label.font = UIFont.systemFont(ofSize: 24)
     label.layer.borderColor = UIColor.green.cgColor

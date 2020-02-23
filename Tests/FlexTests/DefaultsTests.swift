@@ -6,7 +6,7 @@
 //  Copyright © 2018 Marc Bauer. All rights reserved.
 //
 
-import Flex
+@testable import Flex
 import UIKit
 import XCTest
 

@@ -119,9 +119,11 @@ public final class FlexLayout {
   }
 
   // MARK: - Public Methods -
-
-  public func style(with handler: (FlexLayout) -> ()) {
-    handler(self)
+  @discardableResult
+  public func addChild(_ view: UIView) -> FlexLayout {
+    view.flex.enabled = true
+    self.owner.addSubview(view)
+    return view.flex
   }
 
   public func sizeThatFits(_ size: CGSize) -> CGSize {

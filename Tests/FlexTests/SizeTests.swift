@@ -6,23 +6,20 @@
 //  Copyright © 2018 Marc Bauer. All rights reserved.
 //
 
-import Flex
+@testable import Flex
 import UIKit
 import XCTest
 
 final class SizeTests: XCTestCase {
   func testPointDimensions() {
     let parent = UIView(frame: CGRect(x: 0, y: 0, width: 300, height: 300))
-    parent.flex.enabled = true
+    parent.flex.enable()
 
     let child = UIView()
-    parent.addSubview(child)
 
-    child.flex.style {
-      $0.enabled = true
-      $0.width = 150
-      $0.height = 100
-    }
+    parent.flex
+      .addChild(child)
+      .size(width: 150, height: 100)
 
     parent.flex.layoutSubviews()
 
@@ -32,16 +29,12 @@ final class SizeTests: XCTestCase {
 
   func testPercentDimensions() {
     let parent = UIView(frame: CGRect(x: 0, y: 0, width: 300, height: 300))
-    parent.flex.enabled = true
+    parent.flex.enable()
 
     let child = UIView()
-    parent.addSubview(child)
-
-    child.flex.style {
-      $0.enabled = true
-      $0.width = 50%
-      $0.height = 20%
-    }
+    parent.flex
+      .addChild(child)
+      .size(width: 50%, height: 20%)
 
     parent.flex.layoutSubviews()
 
@@ -51,20 +44,17 @@ final class SizeTests: XCTestCase {
 
   func testMinSize() {
     let parent = UIView(frame: CGRect(x: 0, y: 0, width: 300, height: 300))
-    parent.flex.enabled = true
+    parent.flex.enable()
     parent.flex.alignItems = .start
 
     let child = TestView(intrinsicSize: CGSize(width: 10, height: 10))
-    parent.addSubview(child)
+    parent.flex.addChild(child)
 
     parent.flex.layoutSubviews()
 
     XCTAssertEqual(child.frame, CGRect(x: 0, y: 0, width: 10, height: 10))
 
-    child.flex.style {
-      $0.minWidth = 30
-      $0.minHeight = 50
-    }
+    child.flex.minSize(width: 30, height: 50)
 
     parent.flex.layoutSubviews()
 
@@ -81,8 +71,8 @@ final class SizeTests: XCTestCase {
 
   func testMaxSize() {
     let parent = UIView(frame: CGRect(x: 0, y: 0, width: 300, height: 300))
-    parent.flex.enabled = true
-    parent.flex.alignItems = .start
+    parent.flex.enable()
+    parent.flex.align(items: .start)
 
     let child = TestView(intrinsicSize: CGSize(width: 200, height: 200))
     parent.addSubview(child)
@@ -91,10 +81,7 @@ final class SizeTests: XCTestCase {
 
     XCTAssertEqual(child.frame, CGRect(x: 0, y: 0, width: 200, height: 200))
 
-    child.flex.style {
-      $0.maxWidth = 100
-      $0.maxHeight = 150
-    }
+    child.flex.maxSize(width: 100, height: 150)
 
     parent.flex.layoutSubviews()
 
@@ -111,17 +98,14 @@ final class SizeTests: XCTestCase {
 
   func testAutoMargin() {
     let parent = UIView(frame: CGRect(x: 0, y: 0, width: 300, height: 300))
-    parent.flex.enabled = true
+    parent.flex.enable()
 
     let child = UIView()
-    parent.addSubview(child)
 
-    child.flex.style {
-      $0.enabled = true
-      $0.width = 100
-      $0.height = 100
-      $0.margin = (.auto, .auto, 10, 20)
-    }
+    parent.flex
+      .addChild(child)
+      .size(width: 100, height: 100)
+      .margin(top: .auto, left: .auto, bottom: 10, right: 20)
 
     parent.flex.layoutSubviews()
 

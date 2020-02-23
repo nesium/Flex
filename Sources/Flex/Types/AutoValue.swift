@@ -19,7 +19,7 @@ extension FlexLayout.AutoValue: ExpressibleByFloatLiteral {
 }
 
 extension FlexLayout.AutoValue: ExpressibleByIntegerLiteral {
-  public typealias IntergerLiteralType = Int
+  public typealias IntegerLiteralType = Int
 
   public init(integerLiteral value: Int) {
     self = .point(CGFloat(value))
