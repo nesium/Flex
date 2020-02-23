@@ -1,9 +1,10 @@
 /*
  * Copyright (c) Facebook, Inc. and its affiliates.
  *
- * This source code is licensed under the MIT license found in the LICENSE
- * file in the root directory of this source tree.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  */
+
 #pragma once
 
 #include <yoga/Yoga.h>
@@ -20,7 +21,5 @@ struct Value {
 
   Value(int unit, double value) : unit(unit), value(value) {}
 
-  void toJS(nbind::cbOutput expose) const {
-    expose(unit, value);
-  }
+  void toJS(nbind::cbOutput expose) const { expose(unit, value); }
 };
