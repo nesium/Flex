@@ -5,7 +5,7 @@ import PackageDescription
 let package = Package(
   name: "Flex",
   platforms: [
-    .iOS(.v11)
+    .iOS(.v10)
   ],
   products: [
     .library(name: "Flex", targets: ["Flex"]),
