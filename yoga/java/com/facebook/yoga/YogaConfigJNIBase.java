@@ -1,16 +1,16 @@
-/**
+/*
  * Copyright (c) Facebook, Inc. and its affiliates.
  *
- * This source code is licensed under the MIT license found in the LICENSE
- * file in the root directory of this source tree.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  */
+
 package com.facebook.yoga;
 
 public abstract class YogaConfigJNIBase extends YogaConfig {
 
   long mNativePointer;
   private YogaLogger mLogger;
-  private boolean useVanillaJNI = false;
 
   private YogaConfigJNIBase(long nativePointer) {
     if (nativePointer == 0) {
@@ -20,23 +20,27 @@ public abstract class YogaConfigJNIBase extends YogaConfig {
   }
 
   YogaConfigJNIBase() {
-    this(YogaNative.jni_YGConfigNew());
+    this(YogaNative.jni_YGConfigNewJNI());
+  }
+
+  YogaConfigJNIBase(boolean useVanillaJNI) {
+    this(YogaNative.jni_YGConfigNewJNI());
   }
 
   public void setExperimentalFeatureEnabled(YogaExperimentalFeature feature, boolean enabled) {
-    YogaNative.jni_YGConfigSetExperimentalFeatureEnabled(mNativePointer, feature.intValue(), enabled);
+    YogaNative.jni_YGConfigSetExperimentalFeatureEnabledJNI(mNativePointer, feature.intValue(), enabled);
   }
 
   public void setUseWebDefaults(boolean useWebDefaults) {
-    YogaNative.jni_YGConfigSetUseWebDefaults(mNativePointer, useWebDefaults);
+    YogaNative.jni_YGConfigSetUseWebDefaultsJNI(mNativePointer, useWebDefaults);
   }
 
   public void setPrintTreeFlag(boolean enable) {
-    YogaNative.jni_YGConfigSetPrintTreeFlag(mNativePointer, enable);
+    YogaNative.jni_YGConfigSetPrintTreeFlagJNI(mNativePointer, enable);
   }
 
   public void setPointScaleFactor(float pixelsInPoint) {
-    YogaNative.jni_YGConfigSetPointScaleFactor(mNativePointer, pixelsInPoint);
+    YogaNative.jni_YGConfigSetPointScaleFactorJNI(mNativePointer, pixelsInPoint);
   }
 
   /**
@@ -45,7 +49,7 @@ public abstract class YogaConfigJNIBase extends YogaConfig {
    * Because this was such a long-standing bug we must allow legacy users to switch back to this behaviour.
    */
   public void setUseLegacyStretchBehaviour(boolean useLegacyStretchBehaviour) {
-    YogaNative.jni_YGConfigSetUseLegacyStretchBehaviour(mNativePointer, useLegacyStretchBehaviour);
+    YogaNative.jni_YGConfigSetUseLegacyStretchBehaviourJNI(mNativePointer, useLegacyStretchBehaviour);
   }
 
   /**
@@ -55,13 +59,13 @@ public abstract class YogaConfigJNIBase extends YogaConfig {
    */
   public void setShouldDiffLayoutWithoutLegacyStretchBehaviour(
       boolean shouldDiffLayoutWithoutLegacyStretchBehaviour) {
-    YogaNative.jni_YGConfigSetShouldDiffLayoutWithoutLegacyStretchBehaviour(
-        mNativePointer, shouldDiffLayoutWithoutLegacyStretchBehaviour);
+      YogaNative.jni_YGConfigSetShouldDiffLayoutWithoutLegacyStretchBehaviourJNI(
+          mNativePointer, shouldDiffLayoutWithoutLegacyStretchBehaviour);
   }
 
   public void setLogger(YogaLogger logger) {
     mLogger = logger;
-    YogaNative.jni_YGConfigSetLogger(mNativePointer, logger);
+    YogaNative.jni_YGConfigSetLoggerJNI(mNativePointer, logger);
   }
 
   public YogaLogger getLogger() {
@@ -70,15 +74,5 @@ public abstract class YogaConfigJNIBase extends YogaConfig {
 
   long getNativePointer() {
     return mNativePointer;
-  }
-
-  @Override
-  public void setUseVanillaJNI(boolean useVanillaJNI) {
-    this.useVanillaJNI = useVanillaJNI;
-  }
-
-  @Override
-  public boolean useVanillaJNI() {
-    return this.useVanillaJNI;
   }
 }
