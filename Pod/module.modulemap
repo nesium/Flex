@@ -1,0 +1,6 @@
+framework module Flex {
+  umbrella header "../Flex/Pod/Flex.h"
+
+  export *
+  module * { export * }
+}
