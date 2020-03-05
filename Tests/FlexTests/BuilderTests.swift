@@ -64,6 +64,15 @@ final class BuilderTests: XCTestCase {
     XCTAssertEqual(view.flex.paddingRight, 40%)
   }
 
+  func testPaddingWithUIEdgeInsets() {
+    let view = UIView()
+    view.flex.padding(UIEdgeInsets(top: 44, left: 33, bottom: 22, right: 11))
+    XCTAssertEqual(view.flex.paddingTop, 44)
+    XCTAssertEqual(view.flex.paddingLeft, 33)
+    XCTAssertEqual(view.flex.paddingBottom, 22)
+    XCTAssertEqual(view.flex.paddingRight, 11)
+  }
+
   func testMarginTop() {
     let view = UIView()
     view.flex.margin(top: 10)
@@ -127,6 +136,15 @@ final class BuilderTests: XCTestCase {
     XCTAssertEqual(view.flex.marginRight, .auto)
   }
 
+  func testMarginWithUIEdgeInsets() {
+    let view = UIView()
+    view.flex.margin(UIEdgeInsets(top: 11, left: 22, bottom: 33, right: 44))
+    XCTAssertEqual(view.flex.marginTop, 11)
+    XCTAssertEqual(view.flex.marginLeft, 22)
+    XCTAssertEqual(view.flex.marginBottom, 33)
+    XCTAssertEqual(view.flex.marginRight, 44)
+  }
+
   func testDirection() {
     let view = UIView()
     view.flex.row()
@@ -149,7 +167,7 @@ final class BuilderTests: XCTestCase {
 
   func testJustifyContent() {
     let view = UIView()
-    view.flex.justifyContent(.spaceAround)
+    view.flex.justify(content: .spaceAround)
     XCTAssertEqual(view.flex.justifyContent, .spaceAround)
   }
 
@@ -216,9 +234,27 @@ final class BuilderTests: XCTestCase {
     XCTAssertNil(view.flex.right)
   }
 
+  func testPositionTopOnly() {
+    let view = UIView()
+    view.flex.top(10)
+    XCTAssertEqual(view.flex.top, 10)
+    XCTAssertNil(view.flex.left)
+    XCTAssertNil(view.flex.bottom)
+    XCTAssertNil(view.flex.right)
+  }
+
   func testPositionLeft() {
     let view = UIView()
     view.flex.position(left: 10)
+    XCTAssertNil(view.flex.top)
+    XCTAssertEqual(view.flex.left, 10)
+    XCTAssertNil(view.flex.bottom)
+    XCTAssertNil(view.flex.right)
+  }
+
+  func testPositionLeftOnly() {
+    let view = UIView()
+    view.flex.left(10)
     XCTAssertNil(view.flex.top)
     XCTAssertEqual(view.flex.left, 10)
     XCTAssertNil(view.flex.bottom)
@@ -234,9 +270,27 @@ final class BuilderTests: XCTestCase {
     XCTAssertNil(view.flex.right)
   }
 
+  func testPositionBottomOnly() {
+    let view = UIView()
+    view.flex.bottom(10)
+    XCTAssertNil(view.flex.top)
+    XCTAssertNil(view.flex.left)
+    XCTAssertEqual(view.flex.bottom, 10)
+    XCTAssertNil(view.flex.right)
+  }
+
   func testPositionRight() {
     let view = UIView()
     view.flex.position(right: 10)
+    XCTAssertNil(view.flex.top)
+    XCTAssertNil(view.flex.left)
+    XCTAssertNil(view.flex.bottom)
+    XCTAssertEqual(view.flex.right, 10)
+  }
+
+  func testPositionRightOnly() {
+    let view = UIView()
+    view.flex.right(10)
     XCTAssertNil(view.flex.top)
     XCTAssertNil(view.flex.left)
     XCTAssertNil(view.flex.bottom)
@@ -294,6 +348,13 @@ final class BuilderTests: XCTestCase {
     XCTAssertEqual(view.flex.height, .auto)
   }
 
+  func testSizeWithCGSize() {
+    let view = UIView()
+    view.flex.size(CGSize(width: 100, height: 300))
+    XCTAssertEqual(view.flex.width, 100)
+    XCTAssertEqual(view.flex.height, 300)
+  }
+
   func testMinSizeWidth() {
     let view = UIView()
     view.flex.minSize(width: 200)
@@ -320,6 +381,13 @@ final class BuilderTests: XCTestCase {
     XCTAssertEqual(view.flex.minHeight, 20%)
   }
 
+  func testMinSizeWithCGSize() {
+    let view = UIView()
+    view.flex.minSize(CGSize(width: 100, height: 300))
+    XCTAssertEqual(view.flex.minWidth, 100)
+    XCTAssertEqual(view.flex.minHeight, 300)
+  }
+
   func testMaxSizeWidth() {
     let view = UIView()
     view.flex.maxSize(width: 200)
@@ -344,6 +412,13 @@ final class BuilderTests: XCTestCase {
     view.flex.maxSize(width: 50%, height: 20%)
     XCTAssertEqual(view.flex.maxWidth, 50%)
     XCTAssertEqual(view.flex.maxHeight, 20%)
+  }
+
+  func testMaxSizeWithCGSize() {
+    let view = UIView()
+    view.flex.maxSize(CGSize(width: 100, height: 300))
+    XCTAssertEqual(view.flex.maxWidth, 100)
+    XCTAssertEqual(view.flex.maxHeight, 300)
   }
 
   func testBorderWidthTop() {

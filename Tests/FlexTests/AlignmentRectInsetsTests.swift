@@ -41,7 +41,7 @@ final class AlignmentRectInsetsTests: XCTestCase {
     let container = UIView(frame: CGRect(x: 0, y: 0, width: 300, height: 300))
     container.flex
       .enable()
-      .justifyContent(.center)
+      .justify(content: .center)
       .align(items: .center)
 
     let labelContainer = UIView()

@@ -68,7 +68,7 @@ extension FlexLayout {
   ///
   /// For more information see [w3schools](https://www.w3schools.com/css/css3_flexbox.asp#justify-content).
   @discardableResult
-  public func justifyContent(_ justify: Justify) -> FlexLayout {
+  public func justify(content justify: Justify) -> FlexLayout {
     self.justifyContent = justify
     return self
   }
