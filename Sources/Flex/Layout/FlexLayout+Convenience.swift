@@ -59,12 +59,12 @@ extension FlexLayout {
     }
 
     @discardableResult
-    public func padding(_ margin: UIEdgeInsets) -> FlexLayout {
+    public func padding(_ padding: UIEdgeInsets) -> FlexLayout {
       self.padding(
-        top: .point(margin.top),
-        left: .point(margin.left),
-        bottom: .point(margin.bottom),
-        right: .point(margin.right)
+        top: .point(padding.top),
+        left: .point(padding.left),
+        bottom: .point(padding.bottom),
+        right: .point(padding.right)
       )
     }
   }
