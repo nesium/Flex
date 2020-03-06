@@ -192,12 +192,14 @@ public final class FlexLayout {
 
     FlexLayout.attachNodesFromViewHierarchy(in: self.owner)
 
-    YGNodeCalculateLayout(
-      self.node,
-      Float(size.width),
-      Float(size.height),
-      YGNodeStyleGetDirection(self.node)
-    )
+    if YGNodeGetOwner(self.node) == nil {
+      YGNodeCalculateLayout(
+        self.node,
+        Float(size.width),
+        Float(size.height),
+        YGNodeStyleGetDirection(self.node)
+      )
+    }
 
     // We round the rounded float again. Since on 64 Bit system, CGFloat is a Double, which can lead
     // to rounding problems when we simply use a float on @3x devices.
