@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name                 = "Flex"
-  spec.version              = "0.11.0"
+  spec.version              = "0.11.1"
   spec.summary              = "Flex"
   spec.homepage             = "https://github.com/nesium/Flex.git"
   spec.license              = "MIT license"
@@ -9,7 +9,6 @@ Pod::Spec.new do |spec|
   spec.source               = { :git => "https://github.com/nesium/Flex.git", :tag => "#{spec.version}" }
   spec.source_files         = "Sources/Flex.h", "Sources/Flex/**/*.{swift,h}", "Sources/Yoga/**/*.cpp", "Sources/YogaDebug/**/*.{h,mm}"
   spec.public_header_files  = "Sources/Flex.h"
-  spec.exclude_files        = "Sources/Flex/Layout/FlexLayout+Debug.swift"
   spec.swift_version        = "5.1"
   spec.module_name          = "Flex"
   spec.preserve_paths       = "Sources/Yoga/include/module.modulemap", "yoga/yoga/**/*.{h,cpp}", "Sources/Yoga/include"
