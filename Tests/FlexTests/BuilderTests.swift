@@ -474,4 +474,15 @@ final class BuilderTests: XCTestCase {
       .align(items: .start)
       .align(content: .end)
   }
+
+  func testEnable() {
+    let view = UIView()
+    XCTAssertFalse(view.flex.enabled)
+    view.flex
+      .enable()
+      .grow(1)
+      .shrink(1)
+
+    XCTAssertTrue(view.flex.enabled)
+  }
 }
