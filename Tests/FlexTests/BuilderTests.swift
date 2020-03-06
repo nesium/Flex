@@ -321,9 +321,21 @@ final class BuilderTests: XCTestCase {
     XCTAssertEqual(view.flex.width, 200)
   }
 
+  func testSizeWidthOnly() {
+    let view = UIView()
+    view.flex.width(200)
+    XCTAssertEqual(view.flex.width, 200)
+  }
+
   func testSizeHeight() {
     let view = UIView()
     view.flex.size(height: 200)
+    XCTAssertEqual(view.flex.height, 200)
+  }
+
+  func testSizeHeightOnly() {
+    let view = UIView()
+    view.flex.height(200)
     XCTAssertEqual(view.flex.height, 200)
   }
 

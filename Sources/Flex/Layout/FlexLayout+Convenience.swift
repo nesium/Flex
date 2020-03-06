@@ -42,6 +42,16 @@ extension FlexLayout {
   public func right(_ right: Value?) -> FlexLayout {
     self.position(right: right)
   }
+
+  @discardableResult
+  public func width(_ width: AutoValue?) -> FlexLayout {
+    self.size(width: width)
+  }
+
+  @discardableResult
+  public func height(_ height: AutoValue?) -> FlexLayout {
+    self.size(height: height)
+  }
 }
 
 #if canImport(UIKit)
