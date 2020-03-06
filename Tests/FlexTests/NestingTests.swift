@@ -1,7 +1,8 @@
-import Flex
+@testable import Flex
 import SnapshotTesting
 import UIKit
 import XCTest
+import Yoga
 
 final class NestingTests: XCTestCase {
   func testNestingContainerViews() {
@@ -151,6 +152,46 @@ final class NestingTests: XCTestCase {
     XCTAssertEqual(outerContainer.frame, expectedOuterContainerFrame)
     XCTAssertEqual(outerManual.frame, expectedOuterManualFrame)
     XCTAssertEqual(innerManual.frame, expectedInnerManualFrame)
+    XCTAssertEqual(innerContainer.frame, expectedInnerContainerFrame)
+    XCTAssertEqual(leftChild.frame, expectedLeftChildFrame)
+    XCTAssertEqual(rightChild.frame, expectedRightChildFrame)
+  }
+
+  func testMixedUpLayoutOrder() {
+    let innerContainer = ContainerView()
+    let leftChild = UIView()
+    let rightChild = UIView()
+
+    innerContainer.flex
+      .addChild(leftChild)
+      .grow(1)
+
+    let outerContainer = ContainerView()
+    outerContainer.flex.enable()
+
+    outerContainer.frame = CGRect(x: 0, y: 0, width: 200, height: 40)
+
+    outerContainer.flex
+      .addChild(innerContainer)
+      .row()
+      .grow(1)
+
+    outerContainer.layoutIfNeeded()
+
+    innerContainer.flex
+      .addChild(rightChild)
+      .grow(1)
+
+    XCTAssertTrue(YGNodeIsDirty(rightChild.flex.node))
+
+    XCTAssertNoThrow(innerContainer.layoutIfNeeded(), "CALayer position should not contain NaN")
+
+    let expectedOuterContainerFrame = CGRect(x: 0, y: 0, width: 200, height: 40)
+    let expectedInnerContainerFrame = CGRect(x: 0, y: 0, width: 200, height: 40)
+    let expectedLeftChildFrame = CGRect(x: 0, y: 0, width: 100, height: 40)
+    let expectedRightChildFrame = CGRect(x: 100, y: 0, width: 100, height: 40)
+
+    XCTAssertEqual(outerContainer.frame, expectedOuterContainerFrame)
     XCTAssertEqual(innerContainer.frame, expectedInnerContainerFrame)
     XCTAssertEqual(leftChild.frame, expectedLeftChildFrame)
     XCTAssertEqual(rightChild.frame, expectedRightChildFrame)

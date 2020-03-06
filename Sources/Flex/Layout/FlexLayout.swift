@@ -127,10 +127,16 @@ public final class FlexLayout {
   }
 
   public func sizeThatFits(_ size: CGSize) -> CGSize {
-    return self.calculateLayout(with: CGSize(
-      width: size.width == CGFloat.greatestFiniteMagnitude ? CGFloat(YGValueUndefined.value) : size.width,
-      height: size.height == CGFloat.greatestFiniteMagnitude ? CGFloat(YGValueUndefined.value) : size.height
-    ))
+    return self.calculateLayout(
+      with: CGSize(
+        width: size.width == CGFloat.greatestFiniteMagnitude
+          ? CGFloat(YGValueUndefined.value)
+          : size.width,
+        height: size.height == CGFloat.greatestFiniteMagnitude
+          ? CGFloat(YGValueUndefined.value)
+          : size.height
+      )
+    )
   }
 
   public func layoutSubviews() {
@@ -139,6 +145,19 @@ public final class FlexLayout {
     }
 
     self.calculateLayout(with: self.owner.bounds.size)
+
+    // Our node is still dirty after we've tried to calculate the layout.
+    // This means that we're not a root node. So we're going to find our root node
+    // and layout that instead.
+    guard !YGNodeIsDirty(self.node) else {
+      if let owner = YGNodeGetOwner(self.node) {
+        let parentView: UIView = Unmanaged.fromOpaque(
+          YGNodeGetContext(owner)
+        ).takeUnretainedValue()
+        parentView.flex.layoutSubviews()
+      }
+      return
+    }
 
     self.owner.subviews.forEach { subview in
       FlexLayout.applyLayoutToViewHierarchy(in: subview, round: self.round, ceil: self.ceil)
