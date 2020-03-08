@@ -19,7 +19,7 @@ final class TestView: UIView {
 
     super.init(frame: .zero)
 
-    self.flex.enabled = true
+    self.flex.isEnabled = true
   }
 
   @available(*, unavailable)

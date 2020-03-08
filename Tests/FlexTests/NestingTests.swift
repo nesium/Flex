@@ -197,14 +197,3 @@ final class NestingTests: XCTestCase {
     XCTAssertEqual(rightChild.frame, expectedRightChildFrame)
   }
 }
-
-fileprivate class ContainerView: UIView {
-  override func layoutSubviews() {
-    super.layoutSubviews()
-    self.flex.layoutSubviews()
-  }
-
-  override func sizeThatFits(_ size: CGSize) -> CGSize {
-    self.flex.sizeThatFits(size)
-  }
-}

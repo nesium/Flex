@@ -11,19 +11,25 @@ import Foundation
 extension FlexLayout {
   @discardableResult
   public func enable() -> FlexLayout {
-    self.enabled = true
+    self.isEnabled = true
+    return self
+  }
+
+  @discardableResult
+  public func disable() -> FlexLayout {
+    self.isEnabled = false
     return self
   }
 
   @discardableResult
   public func excludeFromLayout() -> FlexLayout {
-    self.includedInLayout = false
+    self.isIncludedInLayout = false
     return self
   }
 
   @discardableResult
   public func includeInLayout() -> FlexLayout {
-    self.includedInLayout = true
+    self.isIncludedInLayout = true
     return self
   }
 

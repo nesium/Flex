@@ -25,10 +25,10 @@ fileprivate class TestLabel: UILabel {
 final class AlignmentRectInsetsTests: XCTestCase {
   func testAlignmentRectsInsets() {
     let container = UIView(frame: CGRect(x: 0, y: 0, width: 300, height: 300))
-    container.flex.enabled = true
+    container.flex.isEnabled = true
 
     let view = TestView(alignmentInsets: UIEdgeInsets(top: 2, left: 5, bottom: 7, right: 11))
-    view.flex.enabled = true
+    view.flex.isEnabled = true
     view.flex.grow(1)
     container.addSubview(view)
 

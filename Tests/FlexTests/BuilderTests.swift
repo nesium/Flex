@@ -489,12 +489,21 @@ final class BuilderTests: XCTestCase {
 
   func testEnable() {
     let view = UIView()
-    XCTAssertFalse(view.flex.enabled)
+    XCTAssertFalse(view.flex.isEnabled)
     view.flex
       .enable()
       .grow(1)
       .shrink(1)
 
-    XCTAssertTrue(view.flex.enabled)
+    XCTAssertTrue(view.flex.isEnabled)
+  }
+
+  func testDisable() {
+    let view = UIView()
+    XCTAssertFalse(view.flex.isEnabled)
+    view.flex.enable()
+    XCTAssertTrue(view.flex.isEnabled)
+    view.flex.disable()
+    XCTAssertFalse(view.flex.isEnabled)
   }
 }

@@ -13,8 +13,8 @@ import UIKit
 import Yoga
 
 public final class FlexLayout {
-  public var enabled = false
-  public var includedInLayout = true
+  public var isEnabled = false
+  public var isIncludedInLayout = true
 
   public var isDirty: Bool {
     return YGNodeIsDirty(self.node)
@@ -88,8 +88,14 @@ public final class FlexLayout {
 
   public typealias Margin = (AutoValue?, AutoValue?, AutoValue?, AutoValue?)
 
+  private struct Flags {
+    var ownerIsPlainView: Bool = false
+    var ownerIsTableView: Bool = false
+    var ownerIsCollectionView: Bool = false
+  }
+
   private unowned let owner: UIView
-  private let ownerIsPlainView: Bool
+  private let flags: Flags
 
   internal let node: YGNodeRef
 
@@ -100,7 +106,17 @@ public final class FlexLayout {
 
   internal init(owner: UIView) {
     self.owner = owner
-    self.ownerIsPlainView = type(of: owner) == UIView.self
+
+    switch owner {
+      case is UITableView:
+        self.flags = Flags(ownerIsTableView: true)
+      case is UICollectionView:
+        self.flags = Flags(ownerIsCollectionView: true)
+      case _ where type(of: owner) == UIView.self:
+        self.flags = Flags(ownerIsPlainView: true)
+      default:
+        self.flags = Flags()
+    }
 
     let config = YGConfigNew()
     YGConfigSetExperimentalFeatureEnabled(config, YGExperimentalFeatureWebFlexBasis, true)
@@ -121,7 +137,7 @@ public final class FlexLayout {
   // MARK: - Public Methods -
   @discardableResult
   public func addChild(_ view: UIView) -> FlexLayout {
-    view.flex.enabled = true
+    view.flex.isEnabled = true
     self.owner.addSubview(view)
     return view.flex
   }
@@ -140,7 +156,12 @@ public final class FlexLayout {
   }
 
   public func layoutSubviews() {
-    guard self.enabled, !self.isLeaf else {
+    guard
+      self.isEnabled,
+      !self.isLeaf,
+      !self.flags.ownerIsCollectionView,
+      !self.flags.ownerIsTableView
+    else {
       return
     }
 
@@ -190,12 +211,12 @@ public final class FlexLayout {
   // MARK: - Internal Methods -
 
   internal var isLeaf: Bool {
-    guard self.enabled else {
+    guard self.isEnabled else {
       return true
     }
 
     return !self.owner.subviews.contains { subview in
-      subview.flex.enabled
+      subview.flex.isEnabled
     }
   }
 
@@ -207,9 +228,11 @@ public final class FlexLayout {
 
   @discardableResult
   private func calculateLayout(with size: CGSize) -> CGSize {
-    assert(self.enabled, "Yoga is not enabled for this view.")
+    assert(self.isEnabled, "Yoga is not enabled for this view.")
 
-    FlexLayout.attachNodesFromViewHierarchy(in: self.owner)
+    if !self.flags.ownerIsCollectionView, !self.flags.ownerIsTableView {
+      FlexLayout.attachNodesFromViewHierarchy(in: self.owner)
+    }
 
     if YGNodeGetOwner(self.node) == nil {
       YGNodeCalculateLayout(
@@ -249,9 +272,13 @@ public final class FlexLayout {
 
     YGNodeSetMeasureFunc(node, nil)
 
+    guard !layout.flags.ownerIsCollectionView, !layout.flags.ownerIsTableView else {
+      return
+    }
+
     let includedSubviews = view.subviews.filter { subview in
       let layout = subview.flex
-      return layout.enabled && layout.includedInLayout
+      return layout.isEnabled && layout.isIncludedInLayout
     }
 
     if !FlexLayout.children(in: node, equalTo: includedSubviews) {
@@ -273,7 +300,7 @@ public final class FlexLayout {
   ) {
     let layout = view.flex
 
-    guard layout.enabled, layout.includedInLayout else {
+    guard layout.isEnabled, layout.isIncludedInLayout else {
       return
     }
 
@@ -301,7 +328,11 @@ public final class FlexLayout {
       height: ceil(frame.height)
     )
 
-    guard !layout.isLeaf else {
+    guard
+      !layout.isLeaf,
+      !layout.flags.ownerIsCollectionView,
+      !layout.flags.ownerIsTableView
+    else {
       return
     }
 
@@ -336,7 +367,7 @@ public final class FlexLayout {
     // UIKit returns the existing size.
     //
     // See https://github.com/facebook/yoga/issues/606 for more information.
-    if view.subviews.isEmpty, view.flex.ownerIsPlainView {
+    if view.subviews.isEmpty, view.flex.flags.ownerIsPlainView {
       requiredSize = .zero
     } else {
       requiredSize = view.alignmentRect(

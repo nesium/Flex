@@ -17,7 +17,7 @@ final class YogaKitTests: XCTestCase {
     let view = UIView()
     view.flex.enable().size(width: 25)
 
-    XCTAssertTrue(view.flex.enabled)
+    XCTAssertTrue(view.flex.isEnabled)
     XCTAssertEqual(view.flex.width, .point(25))
   }
 
@@ -63,13 +63,13 @@ final class YogaKitTests: XCTestCase {
 
   func testEnabled() {
     let view = UIView()
-    XCTAssertFalse(view.flex.enabled)
+    XCTAssertFalse(view.flex.isEnabled)
 
-    view.flex.enabled = true
-    XCTAssertTrue(view.flex.enabled)
+    view.flex.isEnabled = true
+    XCTAssertTrue(view.flex.isEnabled)
 
-    view.flex.enabled = false
-    XCTAssertFalse(view.flex.enabled)
+    view.flex.isEnabled = false
+    XCTAssertFalse(view.flex.isEnabled)
   }
 
   func testSizeThatFitsSmoke() {
@@ -106,14 +106,14 @@ final class YogaKitTests: XCTestCase {
 
   func testSizeThatFitsEmptyView() {
     let view = UIView(frame: CGRect(x: 10, y: 10, width: 200, height: 200))
-    view.flex.enabled = true
+    view.flex.isEnabled = true
 
     XCTAssertEqual(view.flex.intrinsicSize, CGSize(width: 0, height: 0))
   }
 
   func testPreservingOrigin() {
     let container = UIView(frame: CGRect(x: 0, y: 0, width: 50, height: 75))
-    container.flex.enabled = true
+    container.flex.isEnabled = true
 
     let view = UIView()
     view.flex
@@ -137,10 +137,10 @@ final class YogaKitTests: XCTestCase {
 
   func testDirtyingOnlyWorksOnLeafNodes() {
     let container = UIView()
-    container.flex.enabled = true
+    container.flex.isEnabled = true
 
     let view = UIView()
-    view.flex.enabled = true
+    view.flex.isEnabled = true
     container.addSubview(view)
 
     XCTAssertFalse(container.flex.isDirty)
@@ -161,7 +161,7 @@ final class YogaKitTests: XCTestCase {
     let label = UILabel()
     label.text = "This is a short text."
     label.numberOfLines = 1
-    label.flex.enabled = true
+    label.flex.isEnabled = true
     container.addSubview(label)
 
     container.flex.layoutSubviews()
@@ -188,10 +188,10 @@ final class YogaKitTests: XCTestCase {
 
     XCTAssertTrue(view.flex.isLeaf)
 
-    view.flex.enabled = true
+    view.flex.isEnabled = true
     XCTAssertTrue(view.flex.isLeaf)
 
-    view.subviews.last!.flex.enabled = true
+    view.subviews.last!.flex.isEnabled = true
     XCTAssertFalse(view.flex.isLeaf)
   }
 
@@ -246,7 +246,7 @@ final class YogaKitTests: XCTestCase {
     assertSnapshot(matching: container, as: .recursiveDescription)
 
     container.exchangeSubview(at: 2, withSubviewAt: 0)
-    subview2.flex.includedInLayout = false
+    subview2.flex.isIncludedInLayout = false
     container.flex.layoutSubviews()
 
     assertSnapshot(matching: container, as: .recursiveDescription)
@@ -310,7 +310,7 @@ final class YogaKitTests: XCTestCase {
 
   func testThatWeCorrectlyAttachNestedViews() {
     let container = UIView(frame: CGRect(x: 0, y: 0, width: 300, height: 50))
-    container.flex.enabled = true
+    container.flex.isEnabled = true
     container.flex.direction = .column
 
     FlexLayoutConfiguration.shared.screenScale = 2
