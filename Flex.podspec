@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name                 = "Flex"
-  spec.version              = "0.13.0"
+  spec.version              = "0.14.0"
   spec.summary              = "Flex"
   spec.homepage             = "https://github.com/nesium/Flex.git"
   spec.license              = "MIT license"
