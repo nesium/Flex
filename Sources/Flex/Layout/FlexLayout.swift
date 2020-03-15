@@ -190,6 +190,12 @@ public final class FlexLayout {
       return
     }
 
+    // We're a leaf node, but apparently we had children before. Probably the last child
+    // has been removed in the meanwhile.
+    if self.numberOfChildren > 0 {
+      YGNodeRemoveAllChildren(node)
+    }
+
     // Yoga is not happy if we try to mark a node as "dirty" before we have set
     // the measure function. Since we already know that this is a leaf,
     // this *should* be fine. Forgive me Hack Gods.
