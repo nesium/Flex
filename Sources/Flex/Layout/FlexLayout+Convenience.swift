@@ -14,6 +14,11 @@ extension FlexLayout {
   }
 
   @discardableResult
+  public func position(_ topLeft: CGPoint) -> FlexLayout {
+    self.position(top: .point(topLeft.y), left: .point(topLeft.x))
+  }
+
+  @discardableResult
   public func minSize(_ size: CGSize) -> FlexLayout {
     self.minSize(width: .point(size.width), height: .point(size.height))
   }
@@ -51,6 +56,48 @@ extension FlexLayout {
   @discardableResult
   public func height(_ height: AutoValue?) -> FlexLayout {
     self.size(height: height)
+  }
+
+  @discardableResult
+  public func margin(
+    _ val1: AutoValue?,
+    _ val2: AutoValue? = nil,
+    _ val3: AutoValue? = nil,
+    _ val4: AutoValue? = nil
+  ) -> FlexLayout {
+    switch (val1, val2, val3, val4) {
+      case (.none, .none, .none, .none):
+        return self.margin(top: nil, left: nil, bottom: nil, right: nil)
+      case let (all, .none, .none, .none):
+        return self.margin(top: all, left: all, bottom: all, right: all)
+      case let (topBottom, rightLeft, .none, .none):
+        return self.margin(top: topBottom, left: rightLeft, bottom: topBottom, right: rightLeft)
+      case let (top, rightLeft, bottom, .none):
+        return self.margin(top: top, left: rightLeft, bottom: bottom, right: rightLeft)
+      case let (top, right, bottom, left):
+        return self.margin(top: top, left: left, bottom: bottom, right: right)
+    }
+  }
+
+  @discardableResult
+  public func padding(
+    _ val1: Value?,
+    _ val2: Value? = nil,
+    _ val3: Value? = nil,
+    _ val4: Value? = nil
+  ) -> FlexLayout {
+    switch (val1, val2, val3, val4) {
+      case (.none, .none, .none, .none):
+        return self.padding(top: nil, left: nil, bottom: nil, right: nil)
+      case let (all, .none, .none, .none):
+        return self.padding(top: all, left: all, bottom: all, right: all)
+      case let (topBottom, rightLeft, .none, .none):
+        return self.padding(top: topBottom, left: rightLeft, bottom: topBottom, right: rightLeft)
+      case let (top, rightLeft, bottom, .none):
+        return self.padding(top: top, left: rightLeft, bottom: bottom, right: rightLeft)
+      case let (top, right, bottom, left):
+        return self.padding(top: top, left: left, bottom: bottom, right: right)
+    }
   }
 }
 

@@ -73,6 +73,33 @@ final class BuilderTests: XCTestCase {
     XCTAssertEqual(view.flex.paddingRight, 11)
   }
 
+  func testPaddingShortHands() {
+    let view = UIView()
+    view.flex.padding(100, 200, 300, 400)
+    XCTAssertEqual(view.flex.paddingTop, 100)
+    XCTAssertEqual(view.flex.paddingRight, 200)
+    XCTAssertEqual(view.flex.paddingBottom, 300)
+    XCTAssertEqual(view.flex.paddingLeft, 400)
+
+    view.flex.padding(25, 50, 75)
+    XCTAssertEqual(view.flex.paddingTop, 25)
+    XCTAssertEqual(view.flex.paddingRight, 50)
+    XCTAssertEqual(view.flex.paddingBottom, 75)
+    XCTAssertEqual(view.flex.paddingLeft, 50)
+
+    view.flex.padding(100, 200)
+    XCTAssertEqual(view.flex.paddingTop, 100)
+    XCTAssertEqual(view.flex.paddingRight, 200)
+    XCTAssertEqual(view.flex.paddingBottom, 100)
+    XCTAssertEqual(view.flex.paddingLeft, 200)
+
+    view.flex.padding(33)
+    XCTAssertEqual(view.flex.paddingTop, 33)
+    XCTAssertEqual(view.flex.paddingRight, 33)
+    XCTAssertEqual(view.flex.paddingBottom, 33)
+    XCTAssertEqual(view.flex.paddingLeft, 33)
+  }
+
   func testMarginTop() {
     let view = UIView()
     view.flex.margin(top: 10)
@@ -134,6 +161,33 @@ final class BuilderTests: XCTestCase {
     XCTAssertEqual(view.flex.marginLeft, .auto)
     XCTAssertEqual(view.flex.marginBottom, .auto)
     XCTAssertEqual(view.flex.marginRight, .auto)
+  }
+
+  func testMarginShortHands() {
+    let view = UIView()
+    view.flex.margin(100, 200, 300, 400)
+    XCTAssertEqual(view.flex.marginTop, 100)
+    XCTAssertEqual(view.flex.marginRight, 200)
+    XCTAssertEqual(view.flex.marginBottom, 300)
+    XCTAssertEqual(view.flex.marginLeft, 400)
+
+    view.flex.margin(25, 50, 75)
+    XCTAssertEqual(view.flex.marginTop, 25)
+    XCTAssertEqual(view.flex.marginRight, 50)
+    XCTAssertEqual(view.flex.marginBottom, 75)
+    XCTAssertEqual(view.flex.marginLeft, 50)
+
+    view.flex.margin(100, 200)
+    XCTAssertEqual(view.flex.marginTop, 100)
+    XCTAssertEqual(view.flex.marginRight, 200)
+    XCTAssertEqual(view.flex.marginBottom, 100)
+    XCTAssertEqual(view.flex.marginLeft, 200)
+
+    view.flex.margin(33)
+    XCTAssertEqual(view.flex.marginTop, 33)
+    XCTAssertEqual(view.flex.marginRight, 33)
+    XCTAssertEqual(view.flex.marginBottom, 33)
+    XCTAssertEqual(view.flex.marginLeft, 33)
   }
 
   func testMarginWithUIEdgeInsets() {
@@ -313,6 +367,15 @@ final class BuilderTests: XCTestCase {
     XCTAssertEqual(view.flex.left, 20%)
     XCTAssertEqual(view.flex.bottom, 30%)
     XCTAssertEqual(view.flex.right, 40%)
+  }
+
+  func testPositionWithCGPoint() {
+    let view = UIView()
+    view.flex.position(CGPoint(x: 10, y: 20))
+    XCTAssertEqual(view.flex.top, 20)
+    XCTAssertEqual(view.flex.left, 10)
+    XCTAssertNil(view.flex.bottom)
+    XCTAssertNil(view.flex.right)
   }
 
   func testSizeWidth() {
