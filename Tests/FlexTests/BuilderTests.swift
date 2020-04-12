@@ -569,4 +569,15 @@ final class BuilderTests: XCTestCase {
     view.flex.disable()
     XCTAssertFalse(view.flex.isEnabled)
   }
+
+  func testAspectRatio() {
+    let view = UIView()
+    XCTAssertNil(view.flex.aspectRatio)
+
+    view.flex.aspectRatio(2)
+    XCTAssertEqual(view.flex.aspectRatio, 2)
+
+    view.flex.aspectRatio(nil)
+    XCTAssertNil(view.flex.aspectRatio)
+  }
 }

@@ -66,5 +66,6 @@ final class DefaultsTests: XCTestCase {
     XCTAssertNil(view.flex.minHeight)
     XCTAssertNil(view.flex.maxWidth)
     XCTAssertNil(view.flex.maxHeight)
+    XCTAssertNil(view.flex.aspectRatio)
   }
 }

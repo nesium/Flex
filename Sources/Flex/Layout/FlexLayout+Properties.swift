@@ -317,6 +317,23 @@ extension FlexLayout {
       return Value(value: YGNodeStyleGetMaxHeight(self.node))
     }
   }
+
+  var aspectRatio: CGFloat? {
+    set {
+      if let newValue = newValue {
+        YGNodeStyleSetAspectRatio(self.node, Float(newValue))
+      } else {
+        YGNodeStyleSetAspectRatio(self.node, Float.nan)
+      }
+    }
+    get {
+      let value = YGNodeStyleGetAspectRatio(self.node)
+      if value.isNaN {
+        return nil
+      }
+      return CGFloat(value)
+    }
+  }
 }
 
 extension FlexLayout {

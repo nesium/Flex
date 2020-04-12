@@ -155,7 +155,7 @@ public final class FlexLayout {
     )
   }
 
-  public func layoutSubviews() {
+  public func layoutSubviews(into rect: CGRect) {
     guard
       self.isEnabled,
       !self.isLeaf,
@@ -165,7 +165,7 @@ public final class FlexLayout {
       return
     }
 
-    self.calculateLayout(with: self.owner.bounds.size)
+    self.calculateLayout(with: rect.size)
 
     // Our node is still dirty after we've tried to calculate the layout.
     // This means that we're not a root node. So we're going to find our root node
@@ -181,8 +181,23 @@ public final class FlexLayout {
     }
 
     self.owner.subviews.forEach { subview in
-      FlexLayout.applyLayoutToViewHierarchy(in: subview, round: self.round, ceil: self.ceil)
+      FlexLayout.applyLayoutToViewHierarchy(
+        in: subview,
+        offset: UIOffset(horizontal: rect.minX, vertical: rect.minY),
+        round: self.round,
+        ceil: self.ceil
+      )
     }
+  }
+
+  public func layoutSubviews(respectingLayoutMargins: Bool = false) {
+    let bounds: CGRect
+    if respectingLayoutMargins {
+      bounds = self.owner.bounds.inset(by: self.owner.layoutMargins)
+    } else {
+      bounds = self.owner.bounds
+    }
+    self.layoutSubviews(into: bounds)
   }
 
   public func setIsDirty() {
@@ -301,6 +316,7 @@ public final class FlexLayout {
 
   private static func applyLayoutToViewHierarchy(
     in view: UIView,
+    offset: UIOffset,
     round: (CGFloat) -> (CGFloat),
     ceil: (CGFloat) -> (CGFloat)
   ) {
@@ -319,8 +335,8 @@ public final class FlexLayout {
     }
 
     let alignmentRect = CGRect(
-      x: CGFloat(YGNodeLayoutGetLeft(node)),
-      y: CGFloat(YGNodeLayoutGetTop(node)),
+      x: CGFloat(YGNodeLayoutGetLeft(node)) + offset.horizontal,
+      y: CGFloat(YGNodeLayoutGetTop(node)) + offset.vertical,
       width: CGFloat(YGNodeLayoutGetWidth(node)),
       height: CGFloat(YGNodeLayoutGetHeight(node))
     )
@@ -343,7 +359,7 @@ public final class FlexLayout {
     }
 
     view.subviews.forEach { subview in
-      FlexLayout.applyLayoutToViewHierarchy(in: subview, round: round, ceil: ceil)
+      FlexLayout.applyLayoutToViewHierarchy(in: subview, offset: .zero, round: round, ceil: ceil)
     }
   }
 

@@ -266,4 +266,25 @@ extension FlexLayout {
     right.map { self.borderWidthRight = $0 }
     return self
   }
+
+  /// Yoga specific properties, not compatible with flexbox specification Aspect
+  /// ratio control the size of the undefined dimension of a node. Aspect ratio is
+  /// encoded as a floating point value width/height. e.g. A value of 2 leads to a
+  /// node with a width twice the size of its height while a value of 0.5 gives the
+  /// opposite effect.
+  ///
+  /// - On a node with a set width/height aspect ratio control the size of the
+  ///   unset dimension
+  /// - On a node with a set flex basis aspect ratio controls the size of the node
+  ///   in the cross axis if unset
+  /// - On a node with a measure function aspect ratio works as though the measure
+  ///   function measures the flex basis
+  /// - On a node with flex grow/shrink aspect ratio controls the size of the node
+  ///   in the cross axis if unset
+  /// - Aspect ratio takes min/max dimensions into account
+  @discardableResult
+  public func aspectRatio(_ ratio: CGFloat?) -> FlexLayout {
+    self.aspectRatio = ratio
+    return self
+  }
 }

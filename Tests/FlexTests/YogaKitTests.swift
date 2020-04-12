@@ -371,4 +371,28 @@ final class YogaKitTests: XCTestCase {
     container.flex.layoutSubviews()
     XCTAssertTrue(container.flex.isLeaf)
   }
+
+  func testAspectRatio() {
+    let container = ContainerView()
+    let child = UIView()
+
+    container.flex
+      .addChild(child)
+      .aspectRatio(2)
+
+    container.frame = CGRect(x: 0, y: 0, width: 100, height: 100)
+    container.layoutMargins = UIEdgeInsets(top: 5, left: 7, bottom: 11, right: 13)
+
+    XCTAssertEqual(
+      container.flex.sizeThatFits(CGSize(width: 100, height: CGFloat.greatestFiniteMagnitude)),
+      CGSize(width: 100, height: 50)
+    )
+
+    child.flex.aspectRatio(0.5)
+
+    XCTAssertEqual(
+      container.flex.sizeThatFits(CGSize(width: 100, height: CGFloat.greatestFiniteMagnitude)),
+      CGSize(width: 100, height: 200)
+    )
+  }
 }
