@@ -65,6 +65,7 @@ public final class FlexLayout {
   }
 
   public enum Position {
+    case `static`
     case absolute
     case relative
   }
@@ -126,6 +127,8 @@ public final class FlexLayout {
     self.node = YGNodeNewWithConfig(config)
     self.round = FlexLayoutConfiguration.shared.round
     self.ceil = FlexLayoutConfiguration.shared.ceil
+
+    self.position = .relative
 
     YGNodeSetContext(self.node, Unmanaged.passUnretained(self.owner).toOpaque())
   }

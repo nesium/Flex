@@ -16,6 +16,8 @@ extension FlexLayout.Position: RawRepresentable {
         return YGPositionTypeAbsolute.rawValue
       case .relative:
         return YGPositionTypeRelative.rawValue
+      case .static:
+        return YGPositionTypeStatic.rawValue
     }
   }
 
@@ -25,6 +27,8 @@ extension FlexLayout.Position: RawRepresentable {
         self = .absolute
       case YGPositionTypeRelative.rawValue:
         self = .relative
+      case YGPositionTypeStatic.rawValue:
+        self = .static
       default:
         return nil
     }
